@@ -1,8 +1,10 @@
-# sudo mount /dev/disk/by-label/nixos /mnt
-# sudo mount -o umask=077 /dev/disk/by-label/boot /mnt/boot
-# sudo swapon /dev/disk/by-label/swap
-# sudo nix-build '<nixpkgs/nixos>' -A config.system.build.isoImage -I nixos-config=my-os.nix --option substituters https://mirrors.ustc.edu.cn/nix-channels/store --store /mnt
-{ pkgs, modulesPath, lib, ... }: {
+{
+  pkgs,
+  modulesPath,
+  lib,
+  ...
+}:
+{
   imports = [
     "${modulesPath}/installer/cd-dvd/installation-cd-graphical-calamares-plasma6.nix"
     "${modulesPath}/installer/cd-dvd/latest-kernel.nix"
@@ -14,6 +16,11 @@
     allowUnfree = true;
     android_sdk.accept_license = true;
   };
+
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   i18n.inputMethod = {
     enable = true;
@@ -29,6 +36,10 @@
     tree
     tmux
 
+    androidenv.androidPkgs.platform-tools
+    android-tools
+    scrcpy
+
     wechat
     qq
     discord
@@ -36,7 +47,15 @@
   ];
 
   users.users.nixos = {
-    extraGroups = [ "adbusers" "networkmanager" "docker" "vboxusers" "input" "disk" "camera" ];
+    extraGroups = [
+      "adbusers"
+      "networkmanager"
+      "docker"
+      "vboxusers"
+      "input"
+      "disk"
+      "camera"
+    ];
   };
 
   programs.steam.enable = true;
@@ -61,7 +80,7 @@
         tunMode = true;
       };
 
-      nix.settings.substituters = lib.mkForce [ "https://mirrors.ustc.edu.cn/nix-channels/store" ];
+      nix.settings.substituters = [ "https://mirrors.ustc.edu.cn/nix-channels/store" ];
     };
   };
 }
