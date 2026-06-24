@@ -10,7 +10,5 @@
         (import ./configurations.nix)
       ];
     };
-
-    formatter.x86_64-linux = nixpkgs.nixfmt-tree;
   };
 }
